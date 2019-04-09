@@ -1,0 +1,16 @@
+{{ ansible_managed|comment(decoration='# ') }}
+
+AddressFamily  = {{ tinc.address_family }}
+{% for address in tinc.listen %}
+BindToAddress  = {{ address }}
+{% endfor %}
+Broadcast      = {{ tinc.broadcast }}
+{% for host in tinc.hosts %}
+ConnectTo      = {{ hostvars[host].tinc.name }}
+{% endfor %}
+Forwarding     = {{ tinc.forwarding }}
+Interface      = {{ tinc.interface }}
+LocalDiscovery = {{ 'yes' if tinc.local_discovery else 'no' }}
+Mode 		   = {{ tinc.mode }}
+Name		   = {{ tinc.name }}
+StrictSubnets  = {{ 'yes' if tinc.strict_subnets else 'no' }}

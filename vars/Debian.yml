@@ -1,0 +1,4 @@
+# Debian specific variables
+tinc:
+  packages:
+    - tinc

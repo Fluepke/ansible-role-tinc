@@ -1,0 +1,5 @@
+# RedHat specific variables
+tinc:
+  packages:
+    - epel-release
+    - tinc

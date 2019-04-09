@@ -1,0 +1,7 @@
+external_ips: ['192.168.75.21']
+tinc:
+  addresses: "{{ external_ips }}"
+  subnets: ["10.42.23.2/32"]
+  up: |
+    ip link set $INTERFACE up
+    ip addr add 10.42.23.2/24 dev $INTERFACE

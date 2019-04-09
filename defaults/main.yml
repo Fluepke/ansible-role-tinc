@@ -1,0 +1,15 @@
+---
+
+tinc:
+  address_family: "any"
+  listen:
+    - "0.0.0.0"
+    - "::1"
+  broadcast: "mst"
+  connect_to: []
+  forwarding: "kernel"
+  interface: "tinc"
+  local_discovery: true
+  mode: "router"
+  name: "{{ inventory_hostname_short }}"
+  strict_subnets: false

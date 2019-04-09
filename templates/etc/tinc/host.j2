@@ -1,0 +1,10 @@
+{{ ansible_managed|comment(decoration='# ') }}
+
+{% for address in config.addresses %}
+Address = {{ address }}
+{% endfor %}
+{% for subnet  in config.subnets %}
+Subnet  = {{ subnet }}
+{% endfor %}
+
+{{ lookup('file', hostvars[host].tinc.public_key_file) }}

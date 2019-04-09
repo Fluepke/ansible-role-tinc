@@ -1,0 +1,6 @@
+---
+# example playbook for firewalld role
+
+- hosts: all
+  roles:
+    - ansible-role-tinc

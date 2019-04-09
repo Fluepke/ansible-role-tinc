@@ -1,0 +1,73 @@
+---
+# vim:ft=ansible:
+
+# todo: support more than one netname
+- name: Ensure tinc config directory exists
+  file:
+    path: "/etc/tinc/{{ tinc.netname }}/hosts"
+    recurse: true
+    state: directory
+
+- name: Place tinc.conf
+  template:
+    owner: "root"
+    group: "root"
+    src: "etc/tinc/tinc.conf.j2"
+    dest: "/etc/tinc/{{ tinc.netname }}/tinc.conf"
+  notify: Restart tinc
+
+- name: Place tinc-up
+  template:
+    owner: "root"
+    group: "root"
+    mode: 0700
+    src: "etc/tinc/tinc-up.j2"
+    dest: "/etc/tinc/{{ tinc.netname }}/tinc-up"
+  notify: Restart tinc
+  when: "tinc.up|default(false)"
+
+- name: Place tinc-down
+  template:
+    owner: "root"
+    group: "root"
+    mode: 0700
+    src: "etc/tinc/tinc-down.j2"
+    dest: "/etc/tinc/{{ tinc.netname }}/tinc-down"
+  when: "tinc.down|default(false)"
+
+- name: Place hosts
+  vars:
+    config: "{{ hostvars[host].tinc }}"
+  template:
+    owner: "root"
+    group: "root"
+    src: "etc/tinc/host.j2"
+    dest: "/etc/tinc/{{ tinc.netname }}/hosts/{{ hostvars[host].tinc.name }}"
+  loop: "{{ tinc.hosts }}"
+  loop_control:
+    loop_var: "host"
+    label: "{{ host }}"
+  notify: Restart tinc
+
+- name: Place key pair
+  copy:
+    owner: "root"
+    group: "root"
+    mode: 0600
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop:
+    - src: "{{ tinc.private_key_file }}"
+      dest: "/etc/tinc/{{ tinc.netname }}/rsa_key.priv"
+    - src: "{{ tinc.public_key_file }}"
+      dest: "/etc/tinc/{{ tinc.netname }}/rsa_key.pub"
+  notify: Restart tinc
+
+- name: Enable and start services
+  service:
+    name: "{{ item }}"
+    enabled: true
+    state: started
+  loop:
+    - "tinc"
+    - "tinc@{{ tinc.netname }}"

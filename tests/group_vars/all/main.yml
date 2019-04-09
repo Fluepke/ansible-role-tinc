@@ -1,0 +1,6 @@
+tinc:
+  private_key_file: "tinc/{{ inventory_hostname_short }}.priv"
+  public_key_file: "tinc/{{ inventory_hostname_short }}.pub"
+  netname: "default"
+  # ansible hosts to connect to
+  hosts: ["tinc1", "tinc2"]
